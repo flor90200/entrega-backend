@@ -1,0 +1,88 @@
+
+body{
+    height: 100vh;
+     font-family: system-ui; 
+     background-color: rgb(152, 116, 121);
+ }
+ #contenedor {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: center;
+     gap: 20px;
+   
+ }
+ .carts{
+   
+     border-radius: 30px;
+     width:300px;
+     background-color:rgb(94, 59, 90)
+ }
+
+p{
+    font-family: 'Courier New', Courier, monospace;
+    color: aliceblue;
+}
+
+#formProduct {
+    width: 200px;
+    height: 180px;
+    background: #b789a0;
+    padding: 30px;
+    margin: auto;
+    margin-top: 100px;
+    margin-bottom:60px;
+    border-radius: 4px;
+    font-family: 'calibri';
+    color: white;
+    box-shadow: 7px 13px 37px #000000;
+  }
+  
+  #formProducth4 {
+    font-size: 12px;
+   
+  }
+  
+  .controls {
+    width: 150px;
+    background: #b7b2b8;
+
+    border-radius: 4px;
+    margin-bottom: 5px;
+    border: 1px solid #e093bb;
+    font-family: 'calibri';
+    font-size: 10px;
+    color: white;
+  }
+  
+  #formProduct p {
+    height: 100vh;
+    text-align: center;
+    font-size: 8px;
+    line-height: 20px;
+  }
+  #formProduct h2 {
+
+    text-align: center;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  
+  #formProduct a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  #formProduct a:hover {
+    color: white;
+    text-decoration: underline;
+  }
+  
+  #formProduct .botons {
+    
+    background: #bc59a5;
+    border: none;
+    padding: 12px;
+    color: white;
+    margin: 2px 0;
+    font-size: 5px;
+  }
