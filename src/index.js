@@ -1,77 +1,61 @@
 import express  from "express";
-import ProductRouter from "./router/product.routes.js";
-import CartRouter from "./router/carts.routes.js";
-import { engine } from "express-handlebars";
-import * as path from "path";
-import __dirname from "./utils.js";
-import ProductManager from "./controllers/ProductManager.js";
 import {Server} from "socket.io"
+import mongoose from "mongoose";
+import handlebars from "express-handlebars";
+import productsRoutes from "./router/product.routes.js";
+import CartRouter from "./router/carts.routes.js";
+import viewsRouter from './router/view.router.js'
+import chatRouter from './router/chat.router.js'
+import Sockets from './sockets.js'
+//import * as path from "path";
+//import __dirname from "./utils.js";
 
 
-const app = express();
-const PORT = 4000;
-const product = new ProductManager();
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const MONGO_URI = 'mongodb://localhost:27017'
+const MONGO_DB_NAME = 'ecommerce'
+export const PORT = 8080
 
+const app = express()
+app.use(express.json())
+app.use(express.static('./src/public'))
+app.engine('handlebars', handlebars.engine())
+app.set('views', './src/views')
+app.set('view engine', 'handlebars')
 
-//Handlebars
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", path.resolve(__dirname + "/views"))
-
-//static
-app.use("/", express.static(__dirname + "/public"))
-
-app.get("/", async (req, res) => {
-    let allProducts = await product.getProducts();
-    res.render("home", {
-        title: "Flower Style",
-        products: allProducts
+try {
+    await mongoose.connect(MONGO_URI, { 
+        dbName: MONGO_DB_NAME,
+        useUnifiedTopology: true
     })
-})
-
-app.get("/:id", async (req, res) => {
-   console.log(req.params)
-    let prod = await product.getProductsById(req.params.id)
-    res.render("prod", {
-        title: "Flower Style",
-        products: prod
-    })
-})
-
-app.use("/api/products", ProductRouter);
-app.use("/api/cart", CartRouter);
-
-
-const hhtpServer=app.listen (PORT, () => {
-    console.log(`Servidor Express puerto ${PORT}`);
-});
-
-
-const socketServer = new Server(hhtpServer)
-
-
-const pmanagersocket =new ProductManager(__dirname+"/models/products.json")
-
-socketServer.on("connection",async(socket)=>{
-    console.log("client connected", socket.id)
-    const readProducts=await pmanagersocket.getProducts({})
-    socketServer.emit("enviodeproducts",readProducts)
-
-    socket.on("addProduct", async(obj)=>{
-        await pmanagersocket.addProducts(obj)
-        const readProducts=await pmanagersocket.getProducts({})
-        socketServer.emit("enviodeproducts", readProducts)
+    console.log('DB connected!')
+    const server = app.listen(PORT, () => console.log('Server Up'))
+    const io = new Server(server)
+    app.use((req, res, next) => {
+        req.io = io
+        next()
     })
 
+    app.get('/', (req, res) => res.render('index'))
+    app.use('/api/products', productsRoutes)
+    app.use('/api/carts', CartRouter)
+    app.use('/products', viewsRouter)
+    app.use('/carts', viewsRouter)
+    app.use("/chat", chatRouter)
 
-socket.on("deleteProduct",async(id)=>{
-await pmanagersocket.deleteProducts(id)
-const readProducts =await pmanagersocket.getProducts({})
-socketServer.emit("enviodeproducts", readProducts)
-})
+    Sockets(io)
+} catch(err) {
+    console.log('Cannot connect to DB :(  ==> ', err.message)
+    process.exit(-1)
+}
 
-})
+
+
+
+
+
+
+
+
+

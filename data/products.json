@@ -1,0 +1,132 @@
+[
+    {
+      "id": 1,
+      "title": "Clasicas",
+      "description": "efecto clasico",
+      "price": 4800,
+      "thumbnails": [
+        "ads"
+      ],
+      "status": true,
+      "code": "EP001",
+      "stock": 30,
+      "category": "Pestañas"
+    },
+    {
+      "id": 2,
+      "title": "volumen 2D",
+      "description": "2d",
+      "price": 5200,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP002",
+      "stock": 25,
+      "category": "Pestañas"
+    },
+    {
+      "id": 3,
+      "title": "Volumen bajo",
+      "description": "vol bajo",
+      "price": 5400,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP003",
+      "stock": 20,
+      "category": "Pestañas"
+    },
+    {
+      "id": 4,
+      "title": "Vol medio",
+      "description": "vol medio",
+      "price": 5800,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP004",
+      "stock": 20,
+      "category": "Pestañas"
+    },
+    {
+      "id": 5,
+      "title": "Vol ruso",
+      "description": "vol ruso",
+      "price": 6400,
+      "thumbnails": [
+        "ads"
+      ],
+      "status": true,
+      "code": "EP005",
+      "stock": 15,
+      "category": "Pestañas"
+    },
+    {
+      "id": 6,
+      "title": "Mega",
+      "description": "mega volumen",
+      "price": 7500,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP006",
+      "stock": 10,
+      "category": "Pestañas"
+    },
+    {
+      "id": 7,
+      "title": "Lifting",
+      "description": "lifting de pestañas",
+      "price": 4000,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP007",
+      "stock": 31,
+      "category": "Lifting"
+    },
+    {
+      "id": 8,
+      "title": "Lifting+henna+botox",
+      "description": "sumale nutricion y color ",
+      "price": 4900,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP008",
+      "stock": 50,
+      "category": "Lifting"
+    },
+    {
+      "id": 9,
+      "title": "Remocion",
+      "description": "remocion de servicio",
+      "price": 2000,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP009",
+      "stock": 60,
+      "category": "otros"
+    },
+    {
+      "id": 10,
+      "title": "Color",
+      "description": "sumale color a tus pestañas",
+      "price": 1800,
+      "thumbnails": [
+        "asd"
+      ],
+      "status": true,
+      "code": "EP010",
+      "stock": 18,
+      "category": "otros"
+    }
+  ]

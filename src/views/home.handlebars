@@ -1,27 +1,66 @@
 <h1>Lista de productos</h1>
 
-{{#each products}}
-<div class="carts">
-<h2>{{this.nombre}}</h2>
-<p>{{this.stock}}</p>
-<h4>{{this.precio}}</h4>
-<p>{{this.descripcion}}</p>
+<hr />
+<div align="center">
+    {{#if paginateInfo.hasPrevPage}}
+        <a href="{{paginateInfo.prevLink}}">Anterior</a>
+    {{/if}}
+    {{#each paginateInfo.totalPages}}
+        <a href="{{this.link}}">{{this.page}}</a>
+    {{/each}}
+    {{#if paginateInfo.hasNextPage}}
+        <a href="{{paginateInfo.nextLink}}">Siguiente</a>
+    {{/if}}
 </div>
+<hr />
+<table class="table ">
+    <thead>
+        <tr>
+            <td></td>
+            <td><strong>Producto</strong></td>
+            <td><strong>Descripción</strong></td>
+            <td><strong>Precio</strong></td>
+            <td><strong>Código</strong></td>
+            <td><strong>Stock</strong></td>
+            <td><strong>Categoría</strong></td>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+        <tr>
+            <td><button class="btn btn-" onclick="addProductToCart('{{this._id}}')">AddToCart</button></td>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.code}}</td>
+            <td>{{this.stock}}</td>
+            <td>{{this.category}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
 
-<form id="formProduct">
-    <h2>Compra</h2>
-    <input class="controls" type="text" name="title" id="title" placeholder="Ingrese Nombre del Producto" required>
-    <input class="controls" type="number" name="stock" id="stock" placeholder="Ingrese cuantos quiere" required>
-    <input class="controls" type="number" name="price" id="price" placeholder="ingrese su monto" required>
-    <button class="botons" type="submit" id="add-btn" >Registrar </button>
-    <h2> Para eliminar un producto:</h2>
-    <input class="controls" type="text" name="id-prod" id="id-prod" placeholder="Ingrese ID" >
-   <button class="botons" type="button" id="delete-btn">Eliminar</button>
-
-  </form>
-
-
- <div id="contenedor">
-
-    </div>
-{{/each}}
+<script>
+    addProductToCart = (pid) => {
+        fetch(`/api/carts`, {
+            method: 'post'
+        })
+            .then(result => result.json())
+            .then(result => {
+                if (result.status === 'error') throw new Error(result.error)
+                return result.payload._id
+            })
+            .then(cid => 
+                fetch(`/api/carts/${cid}/product/${pid}`, {
+                    method: 'post'
+                })
+            )
+            .then(result => result.json())
+            .then(result => {
+                if (result.status === 'error') throw new Error(result.error)
+                alert(agregado ${result.payload._id}!`)
+            })
+            .catch(err => alert(`error${err}`))
+        
+    }
+</script>
