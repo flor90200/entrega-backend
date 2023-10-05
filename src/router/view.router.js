@@ -2,11 +2,11 @@ import { Router } from "express";
 import { getProducts } from "./product.routes.js";
 import {getProductsFromCart} from "./carts.routes.js"
 import { PORT } from "../index.js";
-
+import {publicRoutes} from '../middewares/auth.middleware.js'
 
 const router = Router()
 
-router.get("/", async ( req, res) => {
+router.get("/",publicRoutes, async ( req, res) => {
     const result = await getProducts(req, res)
     if(result.statusCode === 200) {
         const totalPages = []
@@ -21,7 +21,8 @@ router.get("/", async ( req, res) => {
             }
             totalPages.push({page: index, link})
          }
-         res.render('home', {products: result.Response.payload, paginateInfo: {
+         const user = req.session.user
+         res.render('home', {user, products: result.Response.payload, paginateInfo: {
             hasPrevPage: result.Response.hasPrevPage,
             hasNextPage: result.Response.hasNextPage,
             prevLink: result.Response.prevLink,
@@ -35,11 +36,20 @@ router.get("/", async ( req, res) => {
 })
 
 router.get('/realTimeProducts', async (req, res)=>{
-    const result = await getProductsFromCart(req,res)
+    const result = await getProducts(req,res)
     if(result.statusCode === 200) {
-        res.render('productsFromCart', {cart: result.response.payload})
+        res.render('realTimeProducts', {products: result.Response.payload})
     }else{
-        res.status(result.statusCode).json({status: 'error', error: result.response.error })
+        res.status(result.statusCode).json({status: 'error', error: result.Response.error })
+    }
+})
+
+router.get('/:cid', async(req, res) => {
+    const result = await getProductsFromCart(req, res)
+    if(result.statusCode === 200){
+        res.render('productsFromCart',{cart: result.response.payload})
+    }else{
+        res.status(result.statusCode).json({status: 'error', error: result.response.error})
     }
 })
 
