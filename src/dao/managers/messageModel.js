@@ -1,11 +1,13 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const messageSchema = new mongoose.Schema({
-    user: { type: String, required: true },
-    message: { type: String, required: true }
+const messagesCollection = "messages"
+
+const messagesSchema = new mongoose.Schema({
+    user: String,
+    message: String
 })
 
-mongoose.set('strictQuery', false)
-const messageModel = mongoose.model('messages', messageSchema)
+mongoose.set("strictQuery", false)
+const messagesModel = mongoose.model(messagesCollection, messagesSchema)
 
-export default messageModel
+export default messagesModel

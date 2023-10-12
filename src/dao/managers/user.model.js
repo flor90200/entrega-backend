@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userColection = 'users'
+const userCollection = 'users'
 
 const userSchema = new mongoose.Schema({
     first_name: String,
@@ -12,6 +12,6 @@ const userSchema = new mongoose.Schema({
 })
 
 mongoose.set('strictQuery', false)
-const UserModel = mongoose.model(userColection, userSchema)
+const UserModel = mongoose.model(userCollection, userSchema)
 
 export default UserModel

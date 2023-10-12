@@ -1,66 +1,27 @@
-<h1>Lista de productos: {{user.first_name}} {{user.last_name}} (<a href="/profile">{{user.email}}</a>) -role: {{user.role}} {{age}}</h1>
+<h1>Agregar productos</h1>
+<br>
 
-<hr />
-<div align="center">
-    {{#if paginateInfo.hasPrevPage}}
-        <a href="{{paginateInfo.prevLink}}">Anterior</a>
-    {{/if}}
-    {{#each paginateInfo.totalPages}}
-        <a href="{{this.link}}">{{this.page}}</a>
-    {{/each}}
-    {{#if paginateInfo.hasNextPage}}
-        <a href="{{paginateInfo.nextLink}}">Siguiente</a>
-    {{/if}}
-</div>
-<hr />
-<table class="table ">
-    <thead>
-        <tr>
-            <td></td>
-            <td><strong>Producto</strong></td>
-            <td><strong>Descripción</strong></td>
-            <td><strong>Precio</strong></td>
-            <td><strong>Código</strong></td>
-            <td><strong>Stock</strong></td>
-            <td><strong>Categoría</strong></td>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each products}}
-        <tr>
-            <td><button class="btn btn-" onclick="addProductToCart('{{this._id}}')">AddToCart</button></td>
-            <td>{{this.title}}</td>
-            <td>{{this.description}}</td>
-            <td>{{this.price}}</td>
-            <td>{{this.code}}</td>
-            <td>{{this.stock}}</td>
-            <td>{{this.category}}</td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table>
+<form id="addForm">
+    <label for="title">Nombre del prodcuto</label>
+    <input type="text" name="title" id="title">
+    <br>
+    <label for="description">Descripción del prodcuto</label>
+    <br>
+    <textarea name="description" id="description" cols="30" rows="10"></textarea>
+    <br>
+    <label for="price">Precio del prodcuto</label>
+    <input type="text" name="price" id="price">
+    <br>
+    <label for="thumbnail">Foto del prodcuto</label>
+    <input type="text" name="thumbnail" id="thumbnail">
+    <br>
+    <label for="stock">Stock del prodcuto</label>
+    <input type="text" name="stock" id="stock">
+    <br>
+    <label for="category">Categoria del prodcuto</label>
+    <input type="text" name="category" id="category">
+    <br>
+    <button type="submit">Ingresar Producto</button>
+</form>
 
-<script>
-    addProductToCart = (pid) => {
-        fetch(`/api/carts`, {
-            method: 'post'
-        })
-            .then(result => result.json())
-            .then(result => {
-                if (result.status === 'error') throw new Error(result.error)
-                return result.payload._id
-            })
-            .then(cid => 
-                fetch(`/api/carts/${cid}/product/${pid}`, {
-                    method: 'post'
-                })
-            )
-            .then(result => result.json())
-            .then(result => {
-                if (result.status === 'error') throw new Error(result.error)
-                alert(agregado ${result.payload._id}!`)
-            })
-            .catch(err => alert(`error${err}`))
-        
-    }
-</script>
+<script src="/js/home.js"></script>

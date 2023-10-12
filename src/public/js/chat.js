@@ -1,39 +1,40 @@
+let socket = io()
+let user = ""
+let chatBox = document.getElementById("chatbox")
+
 Swal.fire({
     title: 'Authentication',
     input: 'text',
-    text: 'Set username for the Chat',
+    text: 'Set username for the chat',
     inputValidator: value => {
-        return !value.trim() && 'Please write a valid username'
+        return !value.trim() && 'Please. Write a username!'
     },
     allowOutsideClick: false
-}).then(result => {
-    const user = result.value
+}).then( result => {
+    user = result.value
     document.getElementById('username').innerHTML = user
-    let socket = io()
-    
-    let chatBox = document.getElementById('chatBox')
-    chatBox.addEventListener('keyup', event => {
-        if (event.key === 'Enter') {
-            if (chatBox.value.trim().length > 0) {
-                socket.emit('message', {
-                    user,
-                    message: chatBox.value
-                })
-                chatBox.value = ''
-            }
-        }
-    })
-    
-    socket.on('logs', data => {
-        const divLogs = document.getElementById('messagesLogs')
-        let messages = ''
-        data.reverse().forEach(message => {
-            messages += `<p><i>${message.user}</i>: ${message.message}</p>`
-        })
-        divLogs.innerHTML = messages
-    })
+    socket = io()
+})
 
-    socket.on('alerta', () => {
-        alert('Un nuevo usuario se ha conectado...')
-    })
+chatBox.addEventListener("keyup", event => {
+    if(event.key == "Enter"){
+        if(chatBox.value.trim().length > 0){
+            socket.emit("message", {
+                user,
+                message: chatBox.value
+            })
+            chatBox.value = ""
+        }
+    }
+})
+
+//Recibir Mensajes
+socket.on("logs", data => {
+    const divLog = document.getElementById("messageLogs")
+    let messages = ""
+
+    data.reverse().forEach(message => {
+        messages += `<p><i>${message.user}</i>: ${message.message}</p>`
+    });
+    divLog.innerHTML = messages
 })
