@@ -2,13 +2,17 @@ import express  from "express";
 import {Server} from "socket.io"
 import mongoose from "mongoose";
 import handlebars from "express-handlebars";
+import session from "express-session";
+import MongoStore from 'connect-mongo'
 import productsRoutes from "./router/product.routes.js";
 import CartRouter from "./router/carts.routes.js";
 import viewsRouter from './router/view.router.js'
 import chatRouter from './router/chat.router.js'
 import Sockets from './sockets.js'
 //import * as path from "path";
-//import __dirname from "./utils.js";
+import __dirname from "./utils.js";
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 
 
@@ -19,6 +23,17 @@ export const PORT = 8080
 
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: MONGO_URI,
+        dbName: MONGO_DB_NAME
+    }),
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
 app.use(express.static('./src/public'))
 app.engine('handlebars', handlebars.engine())
 app.set('views', './src/views')
@@ -37,7 +52,11 @@ try {
         next()
     })
 
-    app.get('/', (req, res) => res.render('index'))
+    initializePassport()
+    app.use(passport.initialize())
+    app.use(passport.session())
+
+    app.get('/', sessionViewRouter)
     app.use('/api/products', productsRoutes)
     app.use('/api/carts', CartRouter)
     app.use('/products', viewsRouter)
