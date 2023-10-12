@@ -1,11 +1,12 @@
-
+import local from 'passport-local'
 import passport from "passport"
 import UserModel from "../dao/managers/user.model.js"
 import { createHash, isValidPassword } from "../utils.js"
 
-const localStrategy = local.localStrategy
+const localStrategy = local.Strategy
 
 const initializePassport = () => {
+
     passport.use('register', new localStrategy({
         passReqToCallback: true,
         userNameField: 'email'
