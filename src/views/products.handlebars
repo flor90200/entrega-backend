@@ -1,5 +1,5 @@
-<h1>Realtime</h1>
-<br>
+<h1>Products</h1>
+<hr>
 <table id="productsTable">
     <tr>
         <td><strong>Producto</strong></td>
@@ -9,7 +9,7 @@
         <td><strong>Stock</strong></td>
         <td><strong>Categoría</strong></td>
     </tr>
-    {{#each data}}
+    {{#each data.docs}}
     <tr>
     <td>{{this.title}}</td>
     <td>{{this.description}}</td>
@@ -21,8 +21,3 @@
     {{/each}}  
 </table>
 <div id="moving"></div>
-
-
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/src/public/js/realtime.js"></script>

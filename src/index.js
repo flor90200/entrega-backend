@@ -1,5 +1,5 @@
 import express  from "express";
-import {Server} from "socket.io"
+import {Server} from "socket.io";
 import mongoose from "mongoose";
 import handlebars from "express-handlebars";
 import session from "express-session";
@@ -39,20 +39,20 @@ app.use(session({
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
-
 mongoose.connect(MONGO_URI, {
     dbName: MONGO_DB_NAME
-}, (error) => {
-    if(error){
-        console.log("DB No conected...")
-        return
-    }
-    const httpServer = app.listen(8080, () => console.log("Listening..."))
-    const socketServer = new Server(httpServer)
-    httpServer.on("error", (e) => console.log("ERROR: " + e))
-
-    run(socketServer, app)
 })
+.then(() => {
+    console.log("Conexión exitosa a MongoDB");
+    const httpServer = app.listen(8080, () => console.log("Listening..."));
+    const socketServer = new Server(httpServer);
+    httpServer.on("error", (e) => console.log("ERROR: " + e));
+
+    run(socketServer, app);
+})
+.catch((error) => {
+    console.error("Error en la conexión a MongoDB:", error);
+});
 
 
 
