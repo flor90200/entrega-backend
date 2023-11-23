@@ -1,5 +1,4 @@
-<h1>Products</h1>
-<hr>
+<h2>Products from Cart with id={{cart._id}} [<a href="/api/carts/{{cart._id}}/purchase">Purchase</a>]</h2><hr>
 <table id="productsTable">
     <tr>
         <td><strong>Producto</strong></td>
@@ -8,6 +7,8 @@
         <td><strong>Código</strong></td>
         <td><strong>Stock</strong></td>
         <td><strong>Categoría</strong></td>
+           <button class="remove-button"  type="button" onclick="deleteProductCart('{{cart._id}}', '{{this.product._id}}')" >Eliminar del carrito</button>
+
     </tr>
     {{#each data.docs}}
     <tr>
@@ -21,3 +22,140 @@
     {{/each}}  
 </table>
 <div id="moving"></div>
+<div class="boton">
+    <a href="#" id="botonCompra">Comprar</a>
+</div>
+
+
+<script>
+
+deleteProductCart = (cid, pid) => {
+  fetch(`/api/carts/{{cart._id}}/product/${pid}`, {
+    method: "delete",
+  })
+    .then((result) => result.json())
+    .then((result) => {
+     if (result.status === 'error') throw new Error(result.error) 
+        alert(`Producto Eliminado del carrito con éxito id=${result.payload._id}`);
+
+    })
+    .catch(error => alert('Ocurrio un error,' + error));
+    
+};
+const checkout = async () => {
+  try {
+    const response = await fetch(`/api/carts/{{cart._id}}/purchase`, {
+      method: "GET",
+    });
+    const result = await response.json();
+
+    if (result.status === 'error') {
+      throw new Error(result.error);
+    } else {
+      
+      const ticketDetails = result.payload;
+      console.log('Checkout con exito');
+     
+      return ticketDetails;  
+    }
+  } catch (error) {
+    alert('Ocurrió un error: ' + error);
+    throw error;  
+  }
+};
+
+
+const checkoutCorreo = () => {
+  fetch(`/checkout/checkoutCorreo`, {
+    method: "POST",
+  })
+    .then((result) => result.json())
+    .then((result) => {
+      if (result.status === 'error') {
+        throw new Error(result.error);
+      } else {
+        console.log('Su compra fuen enviada por correo');
+      }
+    })
+    .catch(error => alert('Ocurrió un error: ' + error));
+};
+
+const checkoutSms = async (phoneNumber) => {
+  try {
+    const response = await fetch('/checkout/checkoutSms', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phoneNumber }),
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'error') {
+      throw new Error(result.error);
+    } else {
+      console.log('Mensaje enviado con éxito:', result.message);
+    }
+  } catch (error) {
+    console.error('Error al enviar el mensaje:', error);
+    
+  }
+};
+
+
+const botonCompra = document.getElementById('botonCompra');
+
+botonCompra.addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  try {
+
+await checkoutCorreo();
+
+    const ticketDetails = await checkout();
+    
+    const phoneNumber = await Swal.fire({
+      title: '¡Compra realizada con éxito!',
+      html: `
+        <div style="text-align: left;">
+          <p style="font-size: 16px;">Detalles de la compra:</p>
+          <p><strong>Código:</strong> ${ticketDetails.code}</p>
+          <p><strong>Productos:</strong></p>
+          <ul>
+            ${ticketDetails.products.map(product => `
+              <li>
+                ${product.quantity} x ${product.product} - $${product.price * product.quantity}
+              </li>
+            `).join('')}
+          </ul>
+          <p><strong>Total:</strong> $${ticketDetails.amount}</p>
+          <p><strong>Comprador:</strong> ${ticketDetails.purchaser}</p>
+          <p><strong>Fecha y hora de compra:</strong> ${new Date(ticketDetails.purchase_datetime).toLocaleString()}</p>
+        </div>`,
+      icon: 'success',
+      showCloseButton: true,
+      showConfirmButton: false,
+      input: 'text',
+      inputLabel: 'Por favor, ingrese su número de teléfono:',
+      inputValidator: (value) => {
+        if (!value) {
+          return '¡El número de teléfono es obligatorio!';
+        }
+      },
+    });
+
+   await checkoutSms({ phoneNumber });
+
+  } catch (error) {
+    Swal.fire({
+      title: 'Error',
+      text: 'Ocurrió un error durante la compra. Por favor, inténtalo de nuevo.',
+      icon: 'error',
+    });
+  }
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -1,6 +1,17 @@
 <h1>Realtime</h1>
 <br>
-<table id="productsTable">
+<hr />
+<form id="createForm">
+    <div class="m-2">Title: <input type="text" id="title"></div>
+    <div class="m-2">Description: <input type="text" id="description"></div>
+    <div class="m-2">Price: <input type="text" id="price"></div>
+    <div class="m-2">Code: <input type="text" id="code"></div>
+    <div class="m-2">Stock: <input type="text" id="stock"></div>
+    <div class="m-2">Category: <input type="text" id="category"></div>
+</form>
+<button id="createBtn" class="btn btn-primary">Create Product</button>
+<hr />
+<table id="productsTable" class="table table-striped">
     <tr>
         <td><strong>Producto</strong></td>
         <td><strong>Descripción</strong></td>
@@ -9,7 +20,7 @@
         <td><strong>Stock</strong></td>
         <td><strong>Categoría</strong></td>
     </tr>
-    {{#each data}}
+    {{#each products}}
     <tr>
     <td>{{this.title}}</td>
     <td>{{this.description}}</td>

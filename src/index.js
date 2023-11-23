@@ -14,7 +14,8 @@ import viewrouter from './router/viewrouter.js'
 import chatrouter from './router/chat.router.js'
 import sessionviewrouter from './router/session.view.router.js'
 import sessionrouter from './router/session.router.js'
-
+import checkoutrouter from './router/checkoutrouter.js'
+import generateProductrouter from './router/generateProduct.router.js'
 
 
 const MONGO_URI = config.mongo.uri
@@ -39,6 +40,8 @@ app.use(session ({
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+
+
 
 
 // setear handlebars
@@ -69,7 +72,8 @@ app.use('/session', sessionrouter)
 app.use('/products', viewrouter )
 app.use('/carts', viewrouter)
 app.use('/chat', chatrouter)
-
+app.use('/checkout', checkoutrouter)
+app.use('/mockingproducts', generateProductrouter)
 
 Sockets(io)
 

@@ -1,83 +1,83 @@
-import fs from "fs"
+import fs from 'fs';
 
-class productManager {
 
-    constructor(path) {
-        this.path = path
-    }
-
-    read = () => {
-        if(fs.existsSync(this.path)){
-            return fs.promises.readFile(this.path, "utf-8").then(r => JSON.parse(r))
-        }
-        return []
-    }
-
-    write = list => {
-        return fs.promises.writeFile(this.path, JSON.stringify(list))
-    }
-
-    getNextID = list => {
-        const count = list.length
-        return (count > 0) ? list[count-1].id + 1 : 1
-    }
-
-    getCode = list => {
-      let newCode = Math.floor(Math.random(1) * 10000)
-      const verif = list.some(item => item.code === newCode)
-      return (verif === true) ? newCode = "ERROR" : newCode
+class ProductManager {
+  constructor(filePath) {
+    this.path = filePath;
+    this.#inicio();
   }
 
-
-    getById = async (id) => {
-        const data = await this.read()
-        return data.find(p => p.id == id)
+  async #inicio() {
+    if (!fs.existsSync(this.path)) {
+      await fs.promises.writeFile(this.path, JSON.stringify([], null, 2));
     }
-
-    deleteById = async (id) => {
-        const data = await this.read()
-        const deleteObj = data.findIndex(o => o.id == id)
-        const deleted = data.splice(deleteObj, 1)
-        await this.write(data)
-        return deleted
-    }
-    
-    get = async () => {
-        const data = await this.read()
-        return data
-    }
-
-    add = async (obj) => {
-      const list = await this.read()
-      const nextID = this.getNextID(list)
-      const code = this.getCode(list)
-      obj.id = nextID
-      obj.code = code
-      list.push(obj)
-      await this.write(list)
-      return obj
   }
 
-    update = async (id, obj) => {
-        obj.id = id
-        const list = await this.read()
-        for (let i = 0; i < list.length; i++) {
-          if (list[i].id == id){
-              list[i] = obj
-              await this.write(list) 
-              break
-          }
-        }
-      }
+  #generateID(products) {
+    return products.length === 0 ? 1 : products[products.length - 1].id + 1;
+  }
 
-      updateIdx = async (id,obj) => {
-        obj.id = id
-        const list = await this.read()
-        const idx = list.findIndex(e => e.id == id)
-        if(idx < 0) return
-        list[idx] = obj
-        await this.write(list)
-      }
+  async addProduct(product) {
+    if (!product.title || !product.description || !product.price  || !product.code || !product.stock) {
+      return { statusCode: 400, error: "Error: faltan campos obligatorios" };
+    }
+
+    let data = await fs.promises.readFile(this.path, "utf-8");
+    const products = JSON.parse(data);
+
+    const found = products.find(item => item.code === product.code);
+    if (found) {
+      return { statusCode: 409, error: "Error: el código ya existe" };
+    }
+
+    const productToAdd = { id: this.#generateID(products), ...product };
+    products.push(productToAdd);
+    await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+    return { statusCode: 201, payload: productToAdd };
 }
 
-export default productManager
+
+  getProductsFromFile() {
+    try {
+      const data = fs.readFileSync(this.path, 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async getProducts() {
+    const products = this.getProductsFromFile();
+    return products;
+  }
+
+  async getProductById(productId) {
+    const products = this.getProductsFromFile();
+    const product = products.find(item => item.id === productId);
+    return product || null;
+  }
+
+  async updateProduct(id, updatedFields) {
+    const products = this.getProductsFromFile();
+    const productIndex = products.findIndex(product => product.id === id);
+    if (productIndex !== -1) {
+      products[productIndex] = { ...products[productIndex], ...updatedFields };
+      await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+      return products[productIndex];
+    }
+    return "Error: producto no encontrado";
+  }
+  
+  async deleteProduct(id) {
+    const products = this.getProductsFromFile();
+    const newProducts = products.filter(product => product.id !== id);
+    if (products.length !== newProducts.length) {
+      await fs.promises.writeFile(this.path, JSON.stringify(newProducts, null, 2));
+      return newProducts;
+    }
+    return this.getProducts(); 
+}
+
+}
+
+export default ProductManager;

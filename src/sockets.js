@@ -1,20 +1,18 @@
-import messageModel from './dao/managers/messageModel.js'
-import { Socket } from "socket.io"
+import messageModel from './models/messageModel.js'
 
-export default (id) => {
-io.on ('connection', async Socket => {
-    console.log(`CONNECTED`)
-    Socket.on('productList', data => {
-        io.emit('updatedProducts', data)
-
+export default (io) => {
+    io.on("connection", async socket => {
+        console.log(`New client connected`)
+        socket.on('productList', data => {
+            io.emit('updatedProducts', data)
         })
-        Socket.broadcast.emit('alerta')
-        let message = await messageModel.find().lean().exec()
-        Socket.on('message', async data => {
+        socket.broadcast.emit('alerta')
+        let messages = await messageModel.find().lean().exec()
+        socket.emit("logs", messages)
+        socket.on("message", async data => {
             await messageModel.create(data)
-            let message = await messageModel.find().lean().exec()
-            io.emit('logs', message)
+            let messages = await messageModel.find().lean().exec()
+            io.emit("logs", messages)
         })
     })
-
 }

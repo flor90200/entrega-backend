@@ -1,78 +1,71 @@
 import fs from "fs"
+import { ProductManager } from "./ProductManager.js"
 
-class CartManager {
+
+  
+const productManager = new ProductManager('./data/products.json')
+
+export class CartManager {
+    #path
 
     constructor(path) {
-        this.path = path
+        this.#path = path
+        this.#init()
     }
 
-    read = () => {
-        if (fs.existsSync(this.path)) {
-            return fs.promises.readFile(this.path, "utf-8").then(r => JSON.parse(r))
-        }
-        return []
-    }
-
-    write = list => {
-        return fs.promises.writeFile(this.path, JSON.stringify(list))
-    }
-
-    getNextID = list => {
-        const count = list.length
-        return (count > 0) ? list[count - 1].id + 1 : 1
-    }
-
-    getById = async (id) => {
-        const data = await this.read()
-        return data.find(p => p.id == id)
-    }
-
-    get = async () => {
-        const data = await this.read()
-        return data
-    }
-
-    create = async () => {
-        const carts = await this.read()
-        const nextID = this.getNextID(carts)
-        const newCart = {
-            id: nextID,
-            products: []
-        }
-        carts.push(newCart)
-        await this.write(carts)
-        return newCart
-    }
-
-    update = async (id, obj) => {
-        obj.id = id
-        const list = await this.read()
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].id == id) {
-                list[i] = obj
-                await this.write(list)
-                break
-            }
+    async #init() {
+        if (!fs.existsSync(this.#path)) {
+            await fs.promises.writeFile(this.#path, JSON.stringify([], null, 2))
         }
     }
 
-    addProduct = async (cartID, productID) => {
-        const cart = await this.getById(cartID)
-        let found = false
-        for (let i = 0; i < cart.products.length; i++) {
-            if (cart.products[i].id == productID) {
-                cart.products[i].quantity++
-                found = true
-                break
-            }
-        }
-        if (found == false) {
-            cart.products.push({ id: productID, quantity: 1 })
-        }
-        await this.update(cartID, cart)
+    #generateID(data) {
+        return (data.length === 0) ? 1 : data[data.length - 1].id + 1
+    }
+
+    async createCart() {
+        if (!fs.existsSync(this.#path)) return '[500] DB File does not exists.'
+        let data = await fs.promises.readFile(this.#path, 'utf-8')
+        let carts = JSON.parse(data)
+        const cartToAdd = { id: this.#generateID(carts), products: [] }
+        carts.push(cartToAdd)
+        await fs.promises.writeFile(this.#path, JSON.stringify(carts, null, 2))
+        return cartToAdd
+    }
+
+    async getProductsFromCart(id) {
+        if (!fs.existsSync(this.#path)) return '[500] DB File does not exists.'
+        let data = await fs.promises.readFile(this.#path, 'utf-8')
+        let carts = JSON.parse(data)
+        let cart = carts.find(item => item.id === id)
+        if (!cart) return '[404] Not Found'
         return cart
     }
 
+    async addProductToCart(cid, pid) {
+        if (!fs.existsSync(this.#path)) return '[500] DB File does not exists.'
+        const result = await productManager.getProductById(pid)
+        if (typeof result == 'string') return `[404] Product with ID=${pid} was not found`
+        const cart = await this.getProductsFromCart(cid)
+        if (typeof cart == 'string') return `[404] Cart with ID=${cid} was not found`
+        const productIndex = cart.products.findIndex(item => item.product === pid)
+        if (productIndex > -1) {
+            cart.products[productIndex].quantity += 1
+        } else {
+            cart.products.push({ product: pid, quantity: 1 })
+        }
+        let data = await fs.promises.readFile(this.#path, 'utf-8')
+        let carts = JSON.parse(data)
+        carts = carts.map(item => {
+            if (item.id === cid) {
+                return cart
+            } else {
+                return item
+            }
+        })
+        await fs.promises.writeFile(this.#path, JSON.stringify(carts, null, 2))
+        return cart
+    }
 }
 
 export default CartManager
