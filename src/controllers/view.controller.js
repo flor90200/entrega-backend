@@ -2,10 +2,11 @@
 import {ProductService} from '../repositories/index.js';
 import { getProductsFromCart } from "../controllers/cart.controller.js";
 import {PORT} from '../index.js'
+import { publicRoutes } from '../middewares/auth.middleware.js';
+import logger from '../logger.js';
 
-import {publicRoutes} from '../middewares/auth.middleware.js';
 
-export const getViewProductController = (publicRoutes, async (req, res)=> {
+export const getViewProductController = (publicRouter, async (req, res)=> {
     const result = await ProductService.getAllPaginate(req, PORT)
      if (result.statusCode === 200) {
          const totalPages = []
@@ -20,7 +21,7 @@ export const getViewProductController = (publicRoutes, async (req, res)=> {
              totalPages.push({ page: index, link})
          }
          const user = req.session.user
-         console.log(user);
+         logger.debug(user);
          res.render('home', { user, products: result.response.payload, paginateInfo: {
              hasPrevPage: result.response.hasPrevPage,
              hasNextPage: result.response.hasNextPage,
@@ -33,16 +34,16 @@ export const getViewProductController = (publicRoutes, async (req, res)=> {
      }
      }) 
  
- export const getViewRealTimeProductsController = (publicRoutes, async (req, res) => {
+ export const getViewRealTimeProductsController = (publicRouter, async (req, res) => {
      const result = await ProductService.getAllPaginate(req, PORT)
  if (result.statusCode === 200) {
-     res.render('realTimePRoducts', {products: result.response.payload})
+     res.render('realTimeProducts', {products: result.response.payload})
  } else {
      res.status(result.statusCode).json({ status: 'error', error: result.response.error})
  }
  })
  
- export const getViewProductByIdController =  (publicRoutes, async (req, res) => {
+ export const getViewProductByIdController =  (publicRouter, async (req, res) => {
      const result = await getProductsFromCart(req, res)
      if (result.statusCode === 200) {
          res.render('productsFromCart', { cart: result.response.payload })

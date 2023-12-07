@@ -3,7 +3,7 @@ import config from '../config/config.js'
 import twilio from 'twilio'
 import Mailgen from 'mailgen';
 import { UserService, CartService, ProductService } from '../repositories/index.js';
-
+import logger from '../logger.js';
 
 
 export const checkoutGmail = async (req, res) => {
@@ -102,15 +102,15 @@ export const checkoutSms = (req, res) => {
           to: newPhoneNumber,
         })
         .then((message) => {
-          console.log('Mensaje enviado con éxito:', message.sid);
+            logger.info('Mensaje enviado con éxito:', message.sid);
           res.status(200).json({ status: 'success', message: 'Mensaje enviado con éxito' });
         })
         .catch((error) => {
-          console.error(error);
+            logger.error(error);
           res.status(500).json({ error: 'Error al enviar el mensaje' });
         });
     } catch (error) {
-      console.error(error);
+        logger.error(error);
       res.status(400).json({ error: 'Error en la solicitud' });
     }
   };

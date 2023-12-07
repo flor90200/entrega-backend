@@ -16,6 +16,9 @@ import sessionviewrouter from './router/session.view.router.js'
 import sessionrouter from './router/session.router.js'
 import checkoutrouter from './router/checkoutrouter.js'
 import generateProductrouter from './router/generateProduct.router.js'
+import loggerrouter from './router/routerlogger.js'
+import errorHandler from './middewares/error.js'
+import logger from "./logger.js";
 
 
 const MONGO_URI = config.mongo.uri
@@ -56,8 +59,8 @@ try {
    dbName: MONGO_DB_NAME ,
    useUnifiedTopology: true
   })
-  console.log('DB connected');
-  const server = app.listen(PORT, () => console.log('server up'))
+   logger.info('DB connected');
+  const server = app.listen(PORT, () => logger.info('server up'))
   const io = new Server(server)
   app.use((req, res, next) => {
     req.io = io
@@ -74,6 +77,8 @@ app.use('/carts', viewrouter)
 app.use('/chat', chatrouter)
 app.use('/checkout', checkoutrouter)
 app.use('/mockingproducts', generateProductrouter)
+app.use('/loggerTest', loggerrouter)
+app.use(errorHandler)
 
 Sockets(io)
 

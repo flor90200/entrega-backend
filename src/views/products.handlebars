@@ -1,27 +1,23 @@
-<h2>Products from Cart with id={{cart._id}} [<a href="/api/carts/{{cart._id}}/purchase">Purchase</a>]</h2><hr>
-<table id="productsTable">
-    <tr>
-        <td><strong>Producto</strong></td>
-        <td><strong>Descripción</strong></td>
-        <td><strong>Precio</strong></td>
-        <td><strong>Código</strong></td>
-        <td><strong>Stock</strong></td>
-        <td><strong>Categoría</strong></td>
-           <button class="remove-button"  type="button" onclick="deleteProductCart('{{cart._id}}', '{{this.product._id}}')" >Eliminar del carrito</button>
+<h2 > Productos en el Carrito id={{cart._id}}  </h2>
 
-    </tr>
-    {{#each data.docs}}
-    <tr>
-    <td>{{this.title}}</td>
-    <td>{{this.description}}</td>
-    <td>{{this.price}}</td>
-    <td>{{this.code}}</td>
-    <td>{{this.stock}}</td>
-    <td>{{this.category}}</td>
-    </tr>
-    {{/each}}  
-</table>
-<div id="moving"></div>
+
+
+<div class="cart-container">
+    {{#each cart.products}}
+    <div class="product-card">
+        <img class="product-image" src="{{this.product.image}}" alt="{{this.product.title}}">
+        <div class="product-details">
+            <h5 class="product-title">{{this.product.title}}</h5>
+            <p class="product-description">{{this.product.description}}</p>
+            <p class="product-info"><strong>Precio:</strong> {{this.product.price}}</p>
+            <p class="product-info"><strong>Código:</strong> {{this.product.code}}</p>
+            <p class="product-info"><strong>Stock:</strong> {{this.product.stock}}</p>
+            <p class="product-info"><strong>Cantidad:</strong> {{this.quantity}}</p>
+            <button class="remove-button"  type="button" onclick="deleteProductCart('{{cart._id}}', '{{this.product._id}}')" >Eliminar del carrito</button>
+        </div>
+    </div>
+    {{/each}}
+</div>
 <div class="boton">
     <a href="#" id="botonCompra">Comprar</a>
 </div>

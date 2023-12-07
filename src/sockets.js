@@ -1,8 +1,9 @@
 import messageModel from './models/messageModel.js'
+import logger from './logger.js'
 
 export default (io) => {
     io.on("connection", async socket => {
-        console.log(`New client connected`)
+        logger.info(`New client connected`)
         socket.on('productList', data => {
             io.emit('updatedProducts', data)
         })

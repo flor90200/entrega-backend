@@ -4,10 +4,10 @@ import { handlePolicies } from "../middewares/auth.middleware.js";
 
 const router = Router();
 
-router.get('/', handlePolicies(['USER', 'ADMIN']), getAllProductsController)
-router.get('/:pid', handlePolicies(['USER', 'ADMIN']), getProductByIdController)
-router.post('/', handlePolicies(['ADMIN']), createProductController)
-router.put('/:pid', handlePolicies(['ADMIN']), updateProductController)
-router.delete('/:pid', handlePolicies(['ADMIN']), deleteProductController)
+router.get('/', handlePolicies(['USER', 'ADMIN']), getAllProductsController);
+router.get("/:pid",handlePolicies(['USER', 'ADMIN']),   getProductByIdController);
+router.post("/", handlePolicies(['ADMIN']),  createProductController);
+router.put("/:pid", handlePolicies(['ADMIN']), updateProductController);
+router.delete("/:pid", handlePolicies(['ADMIN']), deleteProductController);
 
-export default router
+export default router;

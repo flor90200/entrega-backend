@@ -34,7 +34,9 @@
     "passport-local": "^1.0.0",
     "shortid": "^2.2.16",
     "socket.io": "^4.7.2",
-    "twilio": "^4.19.0"
+    "twilio": "^4.19.0",
+    "websocket": "^1.0.34",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
