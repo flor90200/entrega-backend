@@ -91,8 +91,8 @@ outer.post('/forget-password', async (req, res) => {
   let message = {
     from: config.checkout.checkoutUser,
     to: email,
-    subject: '[Look Fashion  e-comm API] Reset your password ',
-    html: `<h1>[Look Fashion e-comm API] Reset yout password</h1><hr />You have asked to reset your password. You can do it here: <a href="http://${req.hostname}:${PORT}/reset-password/${token}">http://${req.hostname}:${PORT}/reset-password/${token}</a><hr />Best regards,<br><strong>Look Fashion e-comm API team</strong>`
+    subject: '[Flower  style e-comm API] Reset your password ',
+    html: `<h1>[Flower style e-comm API] Reset yout password</h1><hr />You have asked to reset your password. You can do it here: <a href="http://${req.hostname}:${PORT}/reset-password/${token}">http://${req.hostname}:${PORT}/reset-password/${token}</a><hr />Best regards,<br><strong>Flower Style e-comm API team</strong>`
   }
   try {
     await transporter.sendMail(message)

@@ -5,7 +5,7 @@ import { createHash, isValidPassword } from "../utils.js";
 import { UserService } from "../repositories/index.js";
 import {CartService} from "../repositories/index.js"
 import config from '../config/config.js';  
-
+import logger from "../logger.js";
 const localStrategy = local.Strategy;
 
 const initializePassport = () => {
@@ -24,10 +24,10 @@ const initializePassport = () => {
 
         UserService.create(adminUser)
           .then(result => {
-            console.log('Usuario administrador creado con éxito.');
+            logger.info('Usuario administrador creado con éxito.');
           })
           .catch(err => {
-            console.error('Error al crear el usuario administrador:', err);
+            logger.error('Error al crear el usuario administrador:', err);
           });
         } })
 

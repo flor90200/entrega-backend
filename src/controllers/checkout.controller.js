@@ -27,7 +27,7 @@ export const checkoutGmail = async (req, res) => {
             theme: 'default',
             product: {
                 name: 'flower style',
-                link: 'https://flowerstyle.netlify.app/'
+                link: 'https://www.flowerstyle.com/'
             }
         });
 
