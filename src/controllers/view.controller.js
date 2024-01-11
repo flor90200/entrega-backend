@@ -6,7 +6,7 @@ import { publicRoutes } from '../middewares/auth.middleware.js';
 import logger from '../logger.js';
 
 
-export const getViewProductController = (publicRouter, async (req, res)=> {
+export const getViewProductController = (publicRoutes, async (req, res)=> {
     const result = await ProductService.getAllPaginate(req, PORT)
      if (result.statusCode === 200) {
          const totalPages = []
@@ -34,16 +34,16 @@ export const getViewProductController = (publicRouter, async (req, res)=> {
      }
      }) 
  
- export const getViewRealTimeProductsController = (publicRouter, async (req, res) => {
-     const result = await ProductService.getAllPaginate(req, PORT)
- if (result.statusCode === 200) {
-     res.render('realTimeProducts', {products: result.response.payload})
- } else {
-     res.status(result.statusCode).json({ status: 'error', error: result.response.error})
- }
- })
+ export const getViewRealTimeProductsController = (publicRoutes, async (req, res) => {
+    try {
+        const result = await ProductService.getAll()
+        res.render('realTimeProducts', { products: result })
+    } catch (err) {
+        res.status(500).json({ status: 'error', error: err.message })
+    }
+})
  
- export const getViewProductByIdController =  (publicRouter, async (req, res) => {
+ export const getViewProductByIdController =  (publicRoutes, async (req, res) => {
      const result = await getProductsFromCart(req, res)
      if (result.statusCode === 200) {
          res.render('productsFromCart', { cart: result.response.payload })

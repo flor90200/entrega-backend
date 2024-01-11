@@ -45,10 +45,8 @@ const createLogger = (env) => {
         new winston.transports.Console({
           level: "fatal",
           format: winston.format.combine(
-            winston.format.timestamp(),
             winston.format.colorize(),
             winston.format.simple(),
-            winston.format.json()
           ),
         }),
       ],
@@ -57,5 +55,6 @@ const createLogger = (env) => {
 };
 
 const logger = createLogger(config.logger.newLogger);
+
 
 export default logger;

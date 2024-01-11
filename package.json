@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node",
-    "dev": "nodemon src/index.js ."
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": " mocha test/supertest.test.js"
   },
   "keywords": [],
   "author": "",
@@ -34,11 +35,16 @@
     "passport-local": "^1.0.0",
     "shortid": "^2.2.16",
     "socket.io": "^4.7.2",
+    "swagger-ui-express": "^5.0.0",
+    "sweetalert2": "^11.10.2",
     "twilio": "^4.19.0",
     "websocket": "^1.0.34",
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "chai": "^5.0.0",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

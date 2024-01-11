@@ -1,39 +1,50 @@
 <h1>Realtime</h1>
-<br>
-<hr />
 <form id="createForm">
-    <div class="m-2">Title: <input type="text" id="title"></div>
-    <div class="m-2">Description: <input type="text" id="description"></div>
-    <div class="m-2">Price: <input type="text" id="price"></div>
-    <div class="m-2">Code: <input type="text" id="code"></div>
-    <div class="m-2">Stock: <input type="text" id="stock"></div>
-    <div class="m-2">Category: <input type="text" id="category"></div>
+  <div>Title: <input type="text" id="title" /></div>
+  <div>Description: <input type="text" id="description" /></div>
+  <div>Price: <input type="text" id="price" /></div>
+  <div>Code: <input type="text" id="code" /></div>
+  <div>Stock: <input type="text" id="stock" /></div>
+  <div>Category: <input type="text" id="category" /></div>
 </form>
-<button id="createBtn" class="btn btn-primary">Create Product</button>
+<button id="boton-create">Crear Producto</button>
+
 <hr />
-<table id="productsTable" class="table table-striped">
+
+<table id="tablareal">
+  <thead>
     <tr>
-        <td><strong>Producto</strong></td>
-        <td><strong>Descripción</strong></td>
-        <td><strong>Precio</strong></td>
-        <td><strong>Código</strong></td>
-        <td><strong>Stock</strong></td>
-        <td><strong>Categoría</strong></td>
+      <td><strong></strong></td>
+       <td><strong>producto</strong> </td>
+      <td><strong>Descripcion</strong> </td>
+      <td><strong> precio</strong></td>
+      <td><strong> code</strong></td>
+      <td><strong> stock</strong></td>
+      <td><strong> categori</strong></td>
     </tr>
+  </thead>
+
+  <tbody>
     {{#each products}}
-    <tr>
-    <td>{{this.title}}</td>
-    <td>{{this.description}}</td>
-    <td>{{this.price}}</td>
-    <td>{{this.code}}</td>
-    <td>{{this.stock}}</td>
-    <td>{{this.category}}</td>
-    </tr>
-    {{/each}}  
+
+      <tr>
+        <td>
+          <button
+            class="deleteProduct"
+            onclick="deleteProduct('{{this._id}}')"
+          >Eliminar</button></td>
+        <td> {{this.title}} </td>
+        <td> {{this.description}} </td>
+        <td> {{this.price}} </td>
+        <td> {{this.code}} </td>
+        <td> {{this.stock}} </td>
+        <td> {{this.category}} </td>
+      </tr>
+
+    {{/each}}
+  </tbody>
+
 </table>
-<div id="moving"></div>
-
-
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/src/public/js/realtime.js"></script>

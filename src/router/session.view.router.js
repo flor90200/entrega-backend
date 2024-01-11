@@ -12,6 +12,14 @@ router.get('/', privateRoutes, (req, res) => {
     res.render('sessions/login')
 })
 
+router.get('/forget-password', (req, res) => {
+    res.render('sessions/forget-password')
+})
+
+router.get('/reset-password/:token', (req, res) => {
+    res.redirect(`/session/verify-token/${req.params.token}`)
+})
+
 router.get('/profile', publicRoutes, (req, res) => {
     const userDTO = new UserDTO(req.session.user)
     res.render('sessions/profile', userDTO)

@@ -47,31 +47,38 @@ export const getProductsFromCart = async (req, res) => {
   
       const cid = req.params.cid; 
       const pid = req.params.pid;
-   
-      const cartToUpdate = await CartService.findById(cid);
+      const loggedInUserEmail = req.session.user.email;
+      const product = await ProductService.getById(pid);
       
-      if (cartToUpdate === null) {
-        return res.status(404).json({ status: 'error', error: `Cart with id=${cid} not found` });
+      if (req.session.user.role === 'premium' && product.owner === loggedInUserEmail) {
+      
+        return res.status(403).json({ status: 'error', error: 'Cannot add your own product to the cart' });
       }
-  
-      const productToAdd = await ProductService.getById(pid);
-      if (productToAdd === null) {
-        return res.status(404).json({ status: 'error', error: `Product with id=${pid} not found` });
+        const cartToUpdate = await CartService.findById(cid);
+        
+        if (cartToUpdate === null) {
+          return res.status(404).json({ status: 'error', error: `Cart with id=${cid} not found` });
+        }
+    
+        const productToAdd = await ProductService.getById(pid);
+        if (productToAdd === null) {
+          return res.status(404).json({ status: 'error', error: `Product with id=${pid} not found` });
+        }
+    
+        const productIndex = cartToUpdate.products.findIndex(item => item.product == pid);
+        if (productIndex > -1) {
+          cartToUpdate.products[productIndex].quantity += 1;
+        } else {
+          cartToUpdate.products.push({ product: pid, quantity: 1 });
+        }
+    
+        const result = await CartService.update(cid, cartToUpdate, { returnDocument: 'after' });
+        res.status(201).json({ status: 'success', payload: result });
+      } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message});
       }
-  
-      const productIndex = cartToUpdate.products.findIndex(item => item.product == pid);
-      if (productIndex > -1) {
-        cartToUpdate.products[productIndex].quantity += 1;
-      } else {
-        cartToUpdate.products.push({ product: pid, quantity: 1 });
-      }
-  
-      const result = await CartService.update(cid, cartToUpdate, { returnDocument: 'after' });
-      res.status(201).json({ status: 'success', payload: result });
-    } catch (error) {
-      res.status(500).json({ status: 'error', error: error.message});
     }
-  }
+  
 
   export const deleteCartProductController = async (req, res) => {
     try {
@@ -117,7 +124,7 @@ export const getProductsFromCart = async (req, res) => {
      if (!products[index].hasOwnProperty('product') || !products[index].hasOwnProperty('quantity'))
      return res.status(400).json({status: 'error', error: 'Product must have a valid id and a valid quantity' })
    
-    if (typeof products[index].quantity !== 'number') {
+     if (typeof products[index].quantity !== 'number') {
       return res.status(400).json({status: 'error', error: 'product quantity must be a number' })
     }
     if ( products[index].quantity === 0) {

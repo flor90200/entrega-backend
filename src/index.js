@@ -19,16 +19,35 @@ import generateProductrouter from './router/generateProduct.router.js'
 import loggerrouter from './router/routerlogger.js'
 import errorHandler from './middewares/error.js'
 import logger from "./logger.js";
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
+export const swaggerOptions = {
+  definition: {
+    openapi: '3.1.0',
+    info: {
+    title: 'Ecommerce Flower Style',
+    description: ' Esta API proporciona acceso a los recursos de una tienda de servicios online, incluyendo productos, categorías, carrito de compras, y más.',
+    version: '1.0.0',
+  }
+  },
+  apis: [
+    `./docs/**/*.yaml`,
+  ],
+}
+const specs = swaggerJsdoc(swaggerOptions)
 
 const MONGO_URI = config.mongo.uri
 const MONGO_DB_NAME = config.mongo.dbname
 export const PORT = config.apiserver.port
 
 
+
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use('/docs', swaggerUiExpress.serve,swaggerUiExpress.setup(specs));
+
 
 app.use(session ({
   store: MongoStore.create({
@@ -60,7 +79,7 @@ try {
    useUnifiedTopology: true
   })
    logger.info('DB connected');
-  const server = app.listen(PORT, () => logger.info('server up'))
+  const server = app.listen(PORT, () => logger.http('server up'))
   const io = new Server(server)
   app.use((req, res, next) => {
     req.io = io

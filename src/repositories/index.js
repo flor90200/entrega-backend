@@ -1,8 +1,7 @@
-
+import { Cart, Product, User } from '../dao/factory.js';
 import ProductRepository from './product.repository.js'
 import CartRepository from "./cart.repository.js";
 import UserRepository from "./user.repository.js";
-import { Cart, Product, User } from '../dao/factory.js';
 
 
 

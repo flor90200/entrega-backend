@@ -6,8 +6,8 @@ import {
 
 const router = Router()
 
-router.get("/", publicRoutes, handlePolicies(['USER', 'ADMIN']), getViewProductController) 
-router.get('/realTimeProducts', handlePolicies(['USER', 'ADMIN']), getViewRealTimeProductsController) 
-router.get('/:cid', handlePolicies(['USER', 'ADMIN']), getViewProductByIdController)
+router.get("/", publicRoutes, handlePolicies(['USER', 'ADMIN',  'PREMIUM']), getViewProductController) 
+router.get('/realTimeProducts', handlePolicies(['USER', 'ADMIN',  'PREMIUM']), getViewRealTimeProductsController) 
+router.get('/:cid', handlePolicies(['USER', 'ADMIN',  'PREMIUM']), getViewProductByIdController)
 
 export default router

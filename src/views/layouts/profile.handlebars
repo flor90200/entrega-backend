@@ -1,16 +1,45 @@
 <div>
-    <h2>Bienvenido/a {{first_name}}</h2>
+<h2>Bienvenido {{first_name}} </h2>
 </div>
 
-<div>
+<div class="user-card">
     <ul>
-        <li>Primer Nombre: {{first_name}}</li>
-        <li>Segundo Nombre: {{last_name}}</li>
+        <li>Firstname: {{first_name}}</li>
+        <li>Lastname: {{last_name}}</li>
         <li>Email: {{email}}</li>
-        <li>Edad: {{age}}</li>
-        <li>Role: {{role}}</li>
+        <li>Age: {{age}}</li>
+       <li >Role: {{role}}</li>
+        
     </ul>
+  
 </div>
+  <button onclick="cambiarRol('{{id}}')">Cambiar Rol</button>
 <div>
-    [<a href="/products">prouctos</a> | <a href="/api/sessions/logout">logout</a>]
+    <a href="/products">Productos</a> <a href="/session/logout">Logout</a>
 </div>
+
+<script>
+
+  let cambiarRol = (uid) => {
+    fetch(`/session/premium/${uid}`, {
+      method: 'get',
+        headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(result => result.json())
+      .then(result => {
+        
+        if (result.status === 'error') throw new Error(result.error);
+          
+        alert(`Rol cambiado con éxito para ${result.message}`);
+     
+      })
+      
+       .catch(error => {
+      console.error('Ocurrió un error:', error.message);
+      alert('Ocurrió un error: ' + error.message);
+    });
+  }
+  
+</script>

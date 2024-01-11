@@ -41,19 +41,6 @@ document.getElementById("boton-create").addEventListener("click", () => {
     
 });
 
-deleteProduct = (id) => {
-  fetch(`/api/products/${id}`, {
-    method: "delete",
-  })
-    .then((result) => result.json())
-    .then((result) => {
-      if (result.status === "error") throw new Error(result.error);
-      socket.emit("productList", result.payload);
-     
-    })
-    .catch((err) => alert(`error : /n${err}`));
-};
-
 socket.on("updatedProducts", data => {
   table.innerHTML = 
   `
@@ -72,7 +59,7 @@ socket.on("updatedProducts", data => {
     let tr = document.createElement('tr');
     tr.innerHTML =
     ` 
-    <td><button class="deleteProduct" onclick="deleteProduct(${product.id})">Eliminar</button></td>
+    <td><button class="deleteProduct" onclick="deleteProduct('${product._id}')">Eliminar</button></td>
         <td>${product.title}</td>
         <td>${product.description}</td>
         <td>${product.price}</td>
@@ -81,11 +68,7 @@ socket.on("updatedProducts", data => {
         <td>${product.category}</td>
         `;
     table.getElementsByTagName("tbody")[0].appendChild(tr);
-    console.log("Product added to the table:", product),console.log("Product added to the table:", data)
   }
 });
-
-
-
 
  

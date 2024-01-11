@@ -1,11 +1,21 @@
-<h1>Iniciar Sesion</h1>
 
-<form action="/api/session/login" method="post">
-Email: <input type="text" name="email"><br>
-password: <input type="text" name="password">
-
-
-
-<input type="submit" value="iniciar sesion"> |<a href="/api/session/github">Login with GitHub</a>
-
-</form>
+<head>
+    <h1>Iniciar Sesión</h1>
+</head>
+<body>
+    <form action="/session/login" method="post">
+    <div class="form-container">
+            Email: <input type="text" name="email">
+            Password: <input type="text" name="password">
+            {{#if error}}
+                <p class="error">{{ error }}</p>
+            {{/if}}
+            <input type="submit" value="Iniciar Sesión">
+             <button class="button"  onclick="location.href='/register'" type="button" >Regístrate</button>
+                <button class="button" onclick="location.href='/forget-password'" type="button">Olvidé mi contraseña</button>
+             <button class="github-button" type="button"  onclick="location.href='/session/github'">
+                <img src="" alt="Iniciar Sesión con GitHub">
+            </a>
+    </div>
+    </form>
+</body>
